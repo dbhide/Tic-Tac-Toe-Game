@@ -23,9 +23,11 @@ function resetBoard() {
 function symbolAndToss() {
 	if [ $((RANDOM%2)) -eq 1 ]
 	then
-		symbol=X
+		echo "Player Symbol = X"
+		playerTurn=true
 	else
-		symbol=O
+		echo "Player Symbol = O"
+		playerTurn=true
 	fi
 }
 
