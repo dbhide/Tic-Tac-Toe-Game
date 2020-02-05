@@ -19,4 +19,15 @@ function resetBoard() {
 	done
 }
 
+#To assign letter to a player
+function assignSymbol() {
+	if [ $((RANDOM%2)) -eq 1 ]
+	then
+		symbol=X
+	else
+		symbol=O
+	fi
+}
+
 resetBoard
+assignSymbol
