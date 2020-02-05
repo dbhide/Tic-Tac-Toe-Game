@@ -20,7 +20,7 @@ function resetBoard() {
 }
 
 #To assign letter to a player
-function assignSymbol() {
+function symbolAndToss() {
 	if [ $((RANDOM%2)) -eq 1 ]
 	then
 		symbol=X
@@ -30,4 +30,5 @@ function assignSymbol() {
 }
 
 resetBoard
-assignSymbol
+symbolAndToss
+
