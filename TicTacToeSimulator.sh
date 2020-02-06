@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo "Welcome to Tic Tac Toe Game"
@@ -7,15 +6,18 @@ echo "Welcome to Tic Tac Toe Game"
 ROWS=3
 COLUMNS=3
 X=1
-PLAYER=1
+MOVES=9
+
+#Variables
+counter=1
 
 declare -A board
 
 #To rest the board
 function resetBoard() {
-	for ((i=0; i<ROWS; i++))
+	for ((i=0; i<$ROWS; i++))
 	do
-		for((j=0; j<COLUMNS; j++))
+		for((j=0; j<$COLUMNS; j++))
 		do
 			board[$i,$j]="-"
 		done
@@ -24,37 +26,60 @@ function resetBoard() {
 
 #To assign letter to a player
 function assignSymbol() {
-	if [ $((RANDOM%2)) -eq $X ]
+	if [ $((RANDOM%2)) -eq 1 ]
 	then
-		echo "Player Letter is : X"
+		playerLetter=X
 	else
-		echo "Player Letter is : O"
+		playerLetter=O
 	fi
 }
 
 #To check who will play first
 function checkTurn() {
-	if [ $((RANDOM%2)) -eq $PLAYER ]
+	if [ $((RANDOM%2)) -eq 1 ]
 	then
-		echo "Player will play first"
+		player=true
 	else
-		echo "Player will play first"
+		player=true
 	fi
 }
 
 #To display board
 function showBoard() {
-	for ((i=1; i<=ROWS; i++))
+	for ((i=0; i<$ROWS; i++))
 	do
-		for ((j=1; j<=COLUMNS; j++))
+		for ((j=0; j<$COLUMNS; j++))
 		do
-			echo -e ""-" | \c"
+			echo -e "${board[$i,$j]} | \c"
 		done
 		echo
 	done
+}
+
+function validMove() {
+	row=$1
+	column=$2
+	letter=$3
+	if [[ ${board[$row,$column]} == "-" ]]
+	then
+		board[$row,$column]=$letter
+		((counter++))
+	else
+		echo "Cell already occupied...Try another cell !!"
+	fi
 }
 
 resetBoard
 assignSymbol
 checkTurn
 showBoard
+
+while [ $counter -ne $MOVES ]
+do
+	if [[ $player == true ]]
+	then
+		read -p "Enter row and column number - " rowValue columnValue
+		validMove $rowValue $columnValue $playerLetter
+	fi
+	showBoard
+done
