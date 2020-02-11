@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 echo "Welcome to Tic Tac Toe Game"
 
@@ -11,6 +11,7 @@ PLAYER=0
 #Variables
 moveCounter=1
 flag=0
+#fl=0
 
 declare -A board
 
@@ -95,97 +96,96 @@ function winningConditions() {
 		board[0,2]=$pl
 
 	elif [[ ${board[0,0]} == $cl && ${board[0,2]} == $cl && ${board[0,1]} == $"-" ]]
-   then
-      board[0,1]=$pl
+	then
+		board[0,1]=$pl
 
 	elif [[ ${board[0,1]} == $cl && ${board[0,2]} == $cl && ${board[0,0]} == $"-" ]]
-   then
-      board[0,0]=$pl
+	then
+		board[0,0]=$pl
 
 	elif [[ ${board[1,0]} == $cl && ${board[1,1]} == $cl && ${board[1,2]} == $"-" ]]
-   then
-      board[1,2]=$pl
+	then
+		board[1,2]=$pl
 
 	elif [[ ${board[1,0]} == $cl && ${board[1,2]} == $cl && ${board[1,1]} == $"-" ]]
-   then
-      board[1,1]=$pl
+	then
+		board[1,1]=$pl
 
 	elif [[ ${board[1,1]} == $cl && ${board[1,2]} == $cl && ${board[1,0]} == $"-" ]]
-   then
-      board[1,0]=$pl
+	then
+		board[1,0]=$pl
 
 	elif [[ ${board[2,0]} == $cl && ${board[2,1]} == $cl && ${board[2,2]} == $"-" ]]
-   then
-      board[2,2]=$pl
+	then
+		board[2,2]=$pl
 
 	elif [[ ${board[2,0]} == $cl && ${board[2,2]} == $cl && ${board[2,1]} == $"-" ]]
-   then
-      board[2,1]=$pl
+	then
+		board[2,1]=$pl
 
 	elif [[ ${board[2,1]} == $cl && ${board[2,2]} == $cl && ${board[2,0]} == $"-" ]]
-   then
-      board[2,0]=$pl
+	then
+		board[2,0]=$pl
 
 	elif [[ ${board[0,0]} == $cl && ${board[1,0]} == $cl && ${board[2,0]} == $"-" ]]
-   then
-      board[2,0]=$pl
+	then
+		board[2,0]=$pl
 
 	elif [[ ${board[0,0]} == $cl && ${board[2,0]} == $cl && ${board[1,0]} == $"-" ]]
-   then
-      board[1,0]=$pl
+	then
+		board[1,0]=$pl
 
 	elif [[ ${board[1,0]} == $cl && ${board[2,0]} == $cl && ${board[0,0]} == $"-" ]]
-   then
-      board[0,0]=$pl
+	then
+		board[0,0]=$pl
 
 	elif [[ ${board[0,1]} == $cl && ${board[1,1]} == $cl && ${board[2,1]} == $"-" ]]
-   then
-      board[2,1]=$pl
+	then
+		board[2,1]=$pl
 
 	elif [[ ${board[0,1]} == $cl && ${board[2,1]} == $cl && ${board[1,1]} == $"-" ]]
-   then
-      board[1,1]=$pl
+	then
+		board[1,1]=$pl
 
 	elif [[ ${board[1,1]} == $cl && ${board[2,1]} == $cl && ${board[0,1]} == $"-" ]]
-   then
-      board[0,1]=$pl
+	then
+		board[0,1]=$pl
 
 	elif [[ ${board[0,2]} == $cl && ${board[1,2]} == $cl && ${board[2,2]} == $"-" ]]
-   then
-      board[2,2]=$pl
+	then
+		board[2,2]=$pl
 
 	elif [[ ${board[0,2]} == $cl && ${board[2,2]} == $cl && ${board[1,2]} == $"-" ]]
-   then
-      board[1,2]=$pl
+	then
+		board[1,2]=$pl
 
 	elif [[ ${board[1,2]} == $cl && ${board[2,2]} == $cl && ${board[0,2]} == $"-" ]]
-   then
-      board[0,2]=$pl
+	then
+		board[0,2]=$pl
 
 	elif [[ ${board[0,0]} == $cl && ${board[1,1]} == $cl && ${board[2,2]} == $"-" ]]
-   then
-      board[2,2]=$pl
+	then
+		board[2,2]=$pl
 
 	elif [[ ${board[0,0]} == $cl && ${board[2,2]} == $cl && ${board[1,1]} == $"-" ]]
-   then
-      board[1,1]=$pl
+	then
+		board[1,1]=$pl
 
 	elif [[ ${board[1,1]} == $cl && ${board[2,2]} == $cl && ${board[0,0]} == $"-" ]]
-   then
-      board[0,0]=$pl
+	then
+		board[0,0]=$pl
 
 	elif [[ ${board[0,2]} == $cl && ${board[1,1]} == $cl && ${board[2,0]} == $"-" ]]
-   then
-      board[2,0]=$pl
+	then
+		board[2,0]=$pl
 
 	elif [[ ${board[0,2]} == $cl && ${board[2,0]} == $cl && ${board[1,1]} == $"-" ]]
-   then
-      board[1,1]=$pl
+	then
+		board[1,1]=$pl
 
 	elif [[ ${board[1,1]} == $cl && ${board[2,0]} == $cl && ${board[0,2]} == $"-" ]]
-   then
-      board[0,2]=$pl
-
+	then
+		board[0,2]=$pl
 	else
 		fl=1
 	fi
@@ -250,16 +250,18 @@ do
 		((moveCounter++))
 		flag=1
 	else
+		fl=1
 		echo "Computer's Turn"
-		winningConditions $computerLetter $computerLetter
+		echo "flag"$fl
 		if [[ $fl -eq 1 ]]
 		then
-			rowValue=$((RANDOM%3))
-			columnValue=$((RANDOM%3))
-			validMove $rowValue $columnValue $computerLetter
+			winningConditions $computerLetter $computerLetter
+		fi
+		if [[ $fl -eq 1 ]]
+		then
+			winningConditions $playerLetter $computerLetter
 		fi
 		showBoard
-		board[$rowValue,$columnValue]=$computerLetter
 		winner $computerLetter
 		checkTie
 		((moveCounter++))
