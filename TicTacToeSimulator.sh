@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 echo "Welcome to Tic Tac Toe Game"
 
@@ -11,7 +11,6 @@ PLAYER=0
 #Variables
 moveCounter=1
 flag=0
-#fl=0
 
 declare -A board
 
@@ -191,6 +190,24 @@ function winningConditions() {
 	fi
 }
 
+#To check available corners
+function checkCorners() {
+	fl=0
+	local symbol=$1
+	for(( i=0; i<ROWS; i=$(($i+2)) ))
+	do
+		for(( j=0; j<COLUMNS; j=$(($j+2)) ))
+		do
+			if [[ ${board[$i,$j]} == $"-" ]]
+			then
+				board[$i,$j]=$symbol
+			fl=1
+			return
+			fi
+		done
+	done
+}
+
 resetBoard
 assignSymbol
 checkTurn
@@ -237,7 +254,7 @@ function winner() {
 
 #Main
 function game() {
-while [ $moveCounter -ne $MOVES ]
+while [ $moveCounter -lt $(($MOVES+1)) ]
 do
 	if [ $flag -eq 0 ]
 	then
@@ -245,9 +262,10 @@ do
 		read -p "Enter Row and Column number - " rowValue columnValue
 		validMove $rowValue $columnValue $playerLetter
 		board[$rowValue,$columnValue]=$playerLetter
+		showBoard
 		winner $playerLetter
-		checkTie
 		((moveCounter++))
+		checkTie
 		flag=1
 	else
 		fl=1
@@ -261,10 +279,14 @@ do
 		then
 			winningConditions $playerLetter $computerLetter
 		fi
+		if [[ $fl -eq 1 ]]
+		then
+			checkCorners $computerLetter
+		fi
 		showBoard
 		winner $computerLetter
-		checkTie
 		((moveCounter++))
+		checkTie
 		flag=0
 	fi
 done
