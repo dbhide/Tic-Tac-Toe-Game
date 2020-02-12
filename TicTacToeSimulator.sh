@@ -192,7 +192,7 @@ function winningConditions() {
 
 #To check available corners
 function checkCorners() {
-	fl=0
+	fl=1
 	local symbol=$1
 	for(( i=0; i<ROWS; i=$(($i+2)) ))
 	do
@@ -201,11 +201,23 @@ function checkCorners() {
 			if [[ ${board[$i,$j]} == $"-" ]]
 			then
 				board[$i,$j]=$symbol
-			fl=1
+				fl=0
 			return
 			fi
 		done
 	done
+}
+
+#To check centre position
+function checkCentre() {
+	fl=1
+	local sign=$1
+	if [[ ${board[1,1]} == $"-"	]]
+	then
+		board[1,1]=$sign
+		fl=0
+		return
+	fi
 }
 
 resetBoard
@@ -235,7 +247,7 @@ function winner() {
 
 			if [[ $(( i+j )) -eq $(( ROWS-1 )) && ${board[$i,$j]} == $1 ]]
 			then
-				secondDiagonalCount=$((secondDiagonalCount+1)) 
+				secondDiagonalCount=$((secondDiagonalCount+1))
 			fi
 
 			if [[ $i -eq $j && ${board[$i,$j]} == $1 ]]
@@ -283,7 +295,11 @@ do
 		then
 			checkCorners $computerLetter
 		fi
-		showBoard
+		if [[ $fl -eq 1 ]]
+		then
+			checkCentre $computerLetter
+		fi
+ 		showBoard
 		winner $computerLetter
 		((moveCounter++))
 		checkTie
