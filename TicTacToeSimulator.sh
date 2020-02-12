@@ -86,7 +86,7 @@ function checkTie() {
 
 #To check winning conditions
 function winningConditions() {
-	fl=0
+	flag1=0
 	cl=$1
 	pl=$2
 
@@ -186,38 +186,66 @@ function winningConditions() {
 	then
 		board[0,2]=$pl
 	else
-		fl=1
+		flag1=1
 	fi
 }
 
 #To check available corners
 function checkCorners() {
-	fl=1
-	local symbol=$1
+	flag1=1
+	local sign=$1
 	for(( i=0; i<ROWS; i=$(($i+2)) ))
 	do
 		for(( j=0; j<COLUMNS; j=$(($j+2)) ))
 		do
 			if [[ ${board[$i,$j]} == $"-" ]]
 			then
-				board[$i,$j]=$symbol
-				fl=0
+				board[$i,$j]=$sign
+				flag1=0
 			return
 			fi
 		done
-	done
+done
 }
 
 #To check centre position
 function checkCentre() {
-	fl=1
+	flag1=1
 	local sign=$1
 	if [[ ${board[1,1]} == $"-"	]]
 	then
 		board[1,1]=$sign
-		fl=0
+		flag1=0
 		return
 	fi
+}
+
+#To check available sides
+function checkSides() {
+	flag1=1
+	local sign=$1
+	for (( i=0; i<$(($ROWS-1)); i++ ))
+	do
+		for (( j=0; j<$(($COLUMNS-1)); j++ ))
+		do
+			if [[ $(($j%2)) -eq 0 ]]
+			then
+				if [[ ${board[$i,$(($i+1))]} == $"-" ]]
+				then
+					board[$i,$(($i+1))]=$sign
+					flag1=0
+					return
+				fi
+			else
+				if [[ ${board[$(($i+1)),$i]} == $"-" ]]
+				then
+					board[$(($i+1)),$i]=$sign
+					flag1=0
+					return
+				fi
+			fi
+		done
+	done
 }
 
 resetBoard
@@ -280,24 +308,27 @@ do
 		checkTie
 		flag=1
 	else
-		fl=1
+		flag1=1
 		echo "Computer's Turn"
-		echo "flag"$fl
-		if [[ $fl -eq 1 ]]
+		if [[ $flag1 -eq 1 ]]
 		then
 			winningConditions $computerLetter $computerLetter
 		fi
-		if [[ $fl -eq 1 ]]
+		if [[ $flag1 -eq 1 ]]
 		then
 			winningConditions $playerLetter $computerLetter
 		fi
-		if [[ $fl -eq 1 ]]
+		if [[ $flag1 -eq 1 ]]
 		then
 			checkCorners $computerLetter
 		fi
-		if [[ $fl -eq 1 ]]
+		if [[ $flag1 -eq 1 ]]
 		then
 			checkCentre $computerLetter
+		fi
+		if [[ $flag1 -eq 1 ]]
+		then
+			checkSides $computerLetter
 		fi
  		showBoard
 		winner $computerLetter
@@ -308,3 +339,4 @@ do
 done
 }
 game
+
