@@ -84,110 +84,135 @@ function checkTie() {
 	fi
 }
 
-#To check winning conditions
-function winningConditions() {
+function initialize(){
+	x=0
+	y=0
+	counter1=0
+	counter2=0
+}
+
+function insertSymbol(){
+	local p=$1
+	local q=$2
+	local symbol=$3
+	board[$p,$q]=$symbol
 	flag1=0
-	cl=$1
-	pl=$2
+	flag2=1
+}
 
-	if [[ ${board[0,0]} == $cl && ${board[0,1]} == $cl && ${board[0,2]} == $"-" ]]
+function setSymbol(){
+	local p=$1
+	local q=$2
+	local matchSymbol=$3
+	if [[ ${board[$p,$q]} == $matchSymbol ]]
 	then
-		board[0,2]=$pl
-
-	elif [[ ${board[0,0]} == $cl && ${board[0,2]} == $cl && ${board[0,1]} == $"-" ]]
-	then
-		board[0,1]=$pl
-
-	elif [[ ${board[0,1]} == $cl && ${board[0,2]} == $cl && ${board[0,0]} == $"-" ]]
-	then
-		board[0,0]=$pl
-
-	elif [[ ${board[1,0]} == $cl && ${board[1,1]} == $cl && ${board[1,2]} == $"-" ]]
-	then
-		board[1,2]=$pl
-
-	elif [[ ${board[1,0]} == $cl && ${board[1,2]} == $cl && ${board[1,1]} == $"-" ]]
-	then
-		board[1,1]=$pl
-
-	elif [[ ${board[1,1]} == $cl && ${board[1,2]} == $cl && ${board[1,0]} == $"-" ]]
-	then
-		board[1,0]=$pl
-
-	elif [[ ${board[2,0]} == $cl && ${board[2,1]} == $cl && ${board[2,2]} == $"-" ]]
-	then
-		board[2,2]=$pl
-
-	elif [[ ${board[2,0]} == $cl && ${board[2,2]} == $cl && ${board[2,1]} == $"-" ]]
-	then
-		board[2,1]=$pl
-
-	elif [[ ${board[2,1]} == $cl && ${board[2,2]} == $cl && ${board[2,0]} == $"-" ]]
-	then
-		board[2,0]=$pl
-
-	elif [[ ${board[0,0]} == $cl && ${board[1,0]} == $cl && ${board[2,0]} == $"-" ]]
-	then
-		board[2,0]=$pl
-
-	elif [[ ${board[0,0]} == $cl && ${board[2,0]} == $cl && ${board[1,0]} == $"-" ]]
-	then
-		board[1,0]=$pl
-
-	elif [[ ${board[1,0]} == $cl && ${board[2,0]} == $cl && ${board[0,0]} == $"-" ]]
-	then
-		board[0,0]=$pl
-
-	elif [[ ${board[0,1]} == $cl && ${board[1,1]} == $cl && ${board[2,1]} == $"-" ]]
-	then
-		board[2,1]=$pl
-
-	elif [[ ${board[0,1]} == $cl && ${board[2,1]} == $cl && ${board[1,1]} == $"-" ]]
-	then
-		board[1,1]=$pl
-
-	elif [[ ${board[1,1]} == $cl && ${board[2,1]} == $cl && ${board[0,1]} == $"-" ]]
-	then
-		board[0,1]=$pl
-
-	elif [[ ${board[0,2]} == $cl && ${board[1,2]} == $cl && ${board[2,2]} == $"-" ]]
-	then
-		board[2,2]=$pl
-
-	elif [[ ${board[0,2]} == $cl && ${board[2,2]} == $cl && ${board[1,2]} == $"-" ]]
-	then
-		board[1,2]=$pl
-
-	elif [[ ${board[1,2]} == $cl && ${board[2,2]} == $cl && ${board[0,2]} == $"-" ]]
-	then
-		board[0,2]=$pl
-
-	elif [[ ${board[0,0]} == $cl && ${board[1,1]} == $cl && ${board[2,2]} == $"-" ]]
-	then
-		board[2,2]=$pl
-
-	elif [[ ${board[0,0]} == $cl && ${board[2,2]} == $cl && ${board[1,1]} == $"-" ]]
-	then
-		board[1,1]=$pl
-
-	elif [[ ${board[1,1]} == $cl && ${board[2,2]} == $cl && ${board[0,0]} == $"-" ]]
-	then
-		board[0,0]=$pl
-
-	elif [[ ${board[0,2]} == $cl && ${board[1,1]} == $cl && ${board[2,0]} == $"-" ]]
-	then
-		board[2,0]=$pl
-
-	elif [[ ${board[0,2]} == $cl && ${board[2,0]} == $cl && ${board[1,1]} == $"-" ]]
-	then
-		board[1,1]=$pl
-
-	elif [[ ${board[1,1]} == $cl && ${board[2,0]} == $cl && ${board[0,2]} == $"-" ]]
-	then
-		board[0,2]=$pl
-	else
-		flag1=1
+		((counter1++))
 	fi
+	if [[ ${board[$p,$q]} == $"-" ]]
+	then
+		x=$p
+		y=$q
+		((counter2++))
+	fi
+}
+
+#To win and block rows
+function checkRow(){
+	local putSymbol=$2
+	local checkSymbol=$1
+	if [ $flag2 -eq 0 ]
+	then
+		for (( i=0; i<$ROWS; i++ ))
+		do
+			initialize
+			for (( j=0; j<$COLUMNS; j++ ))
+			do
+				setSymbol $i $j $checkSymbol
+			done
+			if [ $counter1 -eq 2 -a $counter2 -eq 1 ]
+			then
+				insertSymbol $x $y $putSymbol
+			fi
+		done
+	fi
+}
+
+#To win and block columns
+function checkColumn(){
+	local putSymbol=$2
+ 	local checkSymbol=$1
+	if [ $flag2 -eq 0 ]
+	then
+		for (( i=0; i<$ROWS; i++ ))
+		do
+			initialize
+			for (( j=0; j<$COLUMNS; j++ ))
+			do
+				setSymbol $j $i $checkSymbol
+			done
+			if [ $counter1 -eq 2 -a $counter2 -eq 1 ]
+			then
+				insertSymbol $x $y $putSymbol
+			fi
+		done
+	fi
+}
+
+#To win and block first diagonal
+function checkFirstDigonal(){
+	local putSymbol=$2
+	local checkSymbol=$1
+	if [ $flag2 -eq 0 ]
+	then
+		initialize
+		for (( i=0; i<$ROWS; i++ ))
+		do
+			for (( j=0; j<$COLUMNS; j++ ))
+			do
+				if [ $i -eq $j ]
+				then
+					setSymbol $i $j $checkSymbol
+				fi
+			done
+			if [ $counter1 -eq 2 -a $counter2 -eq 1 ]
+			then
+				insertSymbol $x $y $putSymbol
+			fi
+		done
+	fi
+}
+
+#To win and block second Diagonal
+function checkSecondDigonal(){
+	local putSymbol=$2
+	local checkSymbol=$1
+	if [ $flag2 -eq 0 ]
+	then
+		initialize
+		for (( i=0; i<$ROWS; i++ ))
+		do
+			for (( j=$((2-$i)); j<$COLUMNS; j++ ))
+			do
+				setSymbol $i $j $checkSymbol
+				break;
+			done
+			if [ $counter1 -eq 2 -a $counter2 -eq 1 ]
+			then
+				insertSymbol $x $y $putSymbol
+			fi
+		done
+	fi
+}
+
+function checkBoard(){
+	local viewSymbol=$1
+	local placeSymbol=$2
+	flag1=1
+	flag2=0
+	checkRow $viewSymbol $placeSymbol
+	checkColumn $viewSymbol $placeSymbol
+	checkFirstDigonal $viewSymbol $placeSymbol
+	checkSecondDigonal $viewSymbol $placeSymbol
 }
 
 #To check available corners
@@ -312,11 +337,11 @@ do
 		echo "Computer's Turn"
 		if [[ $flag1 -eq 1 ]]
 		then
-			winningConditions $computerLetter $computerLetter
+			checkBoard $computerLetter $computerLetter
 		fi
 		if [[ $flag1 -eq 1 ]]
 		then
-			winningConditions $playerLetter $computerLetter
+			checkBoard $playerLetter $computerLetter
 		fi
 		if [[ $flag1 -eq 1 ]]
 		then
@@ -339,4 +364,3 @@ do
 done
 }
 game
-
